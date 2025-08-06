@@ -1,25 +1,12 @@
-# README
-
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-# project_management
+# Project Management
+-
+# Install
+1. Install Docker and Docker Compose
+2. Create a `.env` file with the following content:
+    ```
+    POSTGRES_USER=postgres
+    POSTGRES_PASSWORD=password
+    RAILS_ENV=development
+    ```
+3. Run `docker-compose build` to build the application.
+4. Run `docker-compose up` to start the application.
