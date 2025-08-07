@@ -11,7 +11,7 @@ default: &default
 
 development:
   <<: *default
-  database: project_management_development
+  database:  <%= ENV.fetch("POSTGRES_DB", "project_management_development") %>
 
 test:
   <<: *default
