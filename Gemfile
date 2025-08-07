@@ -26,6 +26,7 @@ group :development, :test do
   gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
   gem "factory_bot_rails"
+  gem "faker"
 
   gem "pry"
   gem "pry-rails"
@@ -36,5 +37,4 @@ end
 
 group :test do
   gem "rspec-rails"
-  gem "faker"
 end
