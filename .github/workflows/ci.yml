@@ -17,7 +17,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
-          bundler-cache: true
+          bundler-cache: true # cache bundle and if not found, run bundle install
 
       - name: Scan for common Rails security vulnerabilities using static analysis
         run: bin/brakeman --no-pager
@@ -32,10 +32,10 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
-          bundler-cache: true
+          bundler-cache: true # cache bundle and if not found, run bundle install
 
       - name: Lint code for consistent style
-        run: bin/rubocop -f github
+        run: bin/rubocop
 
   test:
     runs-on: ubuntu-latest
@@ -58,7 +58,7 @@ jobs:
 
     steps:
       - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config libgmp-dev libffi-dev
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -67,17 +67,19 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
-          bundler-cache: true
+          bundler-cache: true # cache bundle and if not found, run bundle install
 
-      - name: Prepare database
-        env:
-          RAILS_ENV: test
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432
-        run: bin/rails db:prepare
+      #   Custom bundle install if dont want cache bundle
+      # - name: Install dependencies
+      #   run: |
+      #     bundle config set --local path 'vendor/bundle'
+      #     bundle install
 
       - name: Run tests
         env:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432
           # REDIS_URL: redis://localhost:6379/0
-        run: bundle exec rspec
+        run: |
+          bin/rails db:prepare
+          bundle exec rspec

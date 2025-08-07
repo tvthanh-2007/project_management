@@ -17,6 +17,7 @@ gem "jwt"
 gem "bootsnap", require: false
 gem "kamal", require: false
 gem "thruster", require: false
+gem "active_model_serializers", "~> 0.10.0"
 
 # gem "rack-cors"
 
@@ -26,6 +27,7 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
   gem "factory_bot_rails"
 
+  gem "pry"
   gem "pry-rails"
   gem "letter_opener_web"
   gem "bullet"
