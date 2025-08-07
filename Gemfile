@@ -24,7 +24,7 @@ gem "rack-cors"
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
   gem "brakeman", require: false
-  gem "rubocop-rails-omakase", require: false
+  # gem "rubocop-rails-omakase", require: false
   gem "factory_bot_rails"
 
   gem "pry"
