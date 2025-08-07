@@ -19,7 +19,7 @@ gem "kamal", require: false
 gem "thruster", require: false
 gem "active_model_serializers", "~> 0.10.0"
 
-# gem "rack-cors"
+gem "rack-cors"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
