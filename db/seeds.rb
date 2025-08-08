@@ -7,3 +7,9 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+puts "Create Admin"
+User.create(name: "Admin", username: "admin", password: "Aa123456", password_confirmation: "Aa123456", role: :admin)
+
+puts "Create Users"
+FactoryBot.create_list(:user, 5)
