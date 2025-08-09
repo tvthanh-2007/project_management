@@ -12,6 +12,21 @@ Rails.application.routes.draw do
       post "login", to: "sessions#create"
       post "refresh", to: "sessions#refresh"
       delete "logout", to: "sessions#logout"
+
+      resources :projects do
+        resources :invitations, only: :create
+        resources :member_projects, only: :update
+      end
+
+      resources :invitations, only: [] do
+        collection do
+          post :accept
+        end
+      end
     end
+  end
+
+  if Rails.env.development?
+    mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
 end

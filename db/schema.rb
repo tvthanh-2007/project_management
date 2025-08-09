@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_07_021835) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_09_092355) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -23,6 +23,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_021835) do
     t.datetime "updated_at", null: false
     t.index ["issue_id"], name: "index_comments_on_issue_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "invitations", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.string "email"
+    t.integer "role", null: false
+    t.string "token", null: false
+    t.integer "status", default: 0
+    t.datetime "expires_at"
+    t.datetime "accepted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_invitations_on_project_id"
   end
 
   create_table "issues", force: :cascade do |t|
@@ -79,11 +92,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_021835) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "email"
+    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true, where: "(deleted_at IS NULL)"
   end
 
   add_foreign_key "comments", "issues"
   add_foreign_key "comments", "users"
+  add_foreign_key "invitations", "projects"
   add_foreign_key "issues", "projects"
   add_foreign_key "member_projects", "projects"
   add_foreign_key "member_projects", "users"

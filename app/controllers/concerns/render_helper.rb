@@ -9,8 +9,8 @@ module RenderHelper
     render options.merge json: resources, root: :data
   end
 
-  def render_error(message: nil, status: :unprocessable_entity)
-    render json: { error: message }, status: status
+  def render_error(errors, message: nil, status: :unprocessable_entity)
+    render json: { errors:, message: }, status: status
   end
 
   def serializer_opt_for(resources, options)

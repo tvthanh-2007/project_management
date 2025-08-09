@@ -1,0 +1,5 @@
+<p><%= @invitation.project.name %></p>
+
+<p><a href="<%= @accept_url %>">Join</a></p>
+
+<p>Link will be expire <%= @invitation.expires_at.strftime("%d/%m/%Y %H:%M") %>.</p>

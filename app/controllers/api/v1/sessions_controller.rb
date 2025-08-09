@@ -29,10 +29,10 @@ module Api
 
             res(token_record, message: "Refresh successful")
           else
-            render_error(message: "Refresh token invalid!", status: :unauthorized)
+            raise ApiErrors::UnauthorizedError, "Refresh token invalid!"
           end
         else
-          render_error(message: "Refresh token not found!", status: :unauthorized)
+          raise ApiErrors::UnauthorizedError, "Refresh token not found!"
         end
       end
 
@@ -40,19 +40,17 @@ module Api
         access_token = request.headers["Authorization"]&.split(" ")&.last
         token_record = Token.active.find_by(access_token:)
 
-        if token_record
-          token_record.update!(deleted_at: Time.current)
 
-          res({}, message: "Logout successful")
-        else
-          render_error(message: "Token invalid!", status: :unauthorized)
-        end
+        raise ApiErrors::UnauthorizedError, "Token invalid!" unless token_record
+
+        token_record.update!(deleted_at: Time.current)
+        res({}, message: "Logout successful")
       end
 
       private
 
       def load_token(user)
-        User.generate_tokens(user).values_at(:access_token, :refresh_token)
+        user.generate_tokens.values_at(:access_token, :refresh_token)
       end
     end
   end
