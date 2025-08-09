@@ -6,7 +6,7 @@ module Api
       before_action :load_member_project, only: :update
 
       def update
-        return ForbiddenError unless current_user.admin? || current_user.manager_in_project?(@project)
+        return ApiErrors::ForbiddenError unless current_user.admin? || current_user.manager_in_project?(@project)
 
         @member_project.update!(role: params[:role])
         res({}, message: "Member role updated successfully")

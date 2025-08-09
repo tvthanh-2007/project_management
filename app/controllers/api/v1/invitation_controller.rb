@@ -7,7 +7,7 @@ module Api
       before_action :load_invitation, only: :accept
 
       def create
-        raise ForbiddenError unless current_user.admin? || current_user.manager_in_project?(@project)
+        raise ApiErrors::ForbiddenError unless current_user.admin? || current_user.manager_in_project?(@project)
 
         @project.invitations.pending.where(email: invitation_params[:email]).delete_all
 

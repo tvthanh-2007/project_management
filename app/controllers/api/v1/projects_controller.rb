@@ -1,7 +1,7 @@
 module Api
   module V1
     class ProjectsController < ApplicationController
-      include AuthorizeRequest
+      # include AuthorizeRequest
 
       before_action :load_project, only: [ :show, :edit, :destroy ]
 
@@ -16,7 +16,8 @@ module Api
       end
 
       def index
-        projects = current_user.admin? ? Project.all : current_user.projects
+        # projects = current_user.admin? ? Project.all : current_user.projects
+        projects = Project.all
 
         res(projects, as: :list)
       end
@@ -26,20 +27,20 @@ module Api
       end
 
       def edit
-        raise UnauthorizedError  if current_user.only_read?(@project.id)
+        raise ApiErrors::UnauthorizedError  if current_user.only_read?(@project.id)
 
         res(@project)
       end
 
       def destroy
-        raise UnauthorizedError unless current_user.member? && !current_user.has_owner?(@project)
+        raise ApiErrors::UnauthorizedError unless current_user.member? && !current_user.has_owner?(@project)
 
         @project.destroy
         res({}, message: "Delete successful!")
       end
 
       def update
-        return raise UnauthorizedError  if current_user.only_read?(@project.id)
+        return raise ApiErrors::UnauthorizedError  if current_user.only_read?(@project.id)
 
         @project.update!(project_params)
         res({})

@@ -29,10 +29,10 @@ module Api
 
             res(token_record, message: "Refresh successful")
           else
-            raise UnauthorizedError, "Refresh token invalid!"
+            raise ApiErrors::UnauthorizedError, "Refresh token invalid!"
           end
         else
-          raise UnauthorizedError, "Refresh token not found!"
+          raise ApiErrors::UnauthorizedError, "Refresh token not found!"
         end
       end
 
@@ -41,7 +41,7 @@ module Api
         token_record = Token.active.find_by(access_token:)
 
 
-        raise UnauthorizedError, "Token invalid!" unless token_record
+        raise ApiErrors::UnauthorizedError, "Token invalid!" unless token_record
 
         token_record.update!(deleted_at: Time.current)
         res({}, message: "Logout successful")

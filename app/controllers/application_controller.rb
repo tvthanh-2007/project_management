@@ -4,8 +4,8 @@ class ApplicationController < ActionController::API
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
   rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity
 
-  rescue_from UnauthorizedError, with: :render_unauthorized
-  rescue_from ForbiddenError, with: :render_forbidden
+  rescue_from ApiErrors::UnauthorizedError, with: :render_unauthorized
+  rescue_from ApiErrors::ForbiddenError, with: :render_forbidden
 
   rescue_from StandardError, with: :render_internal_server_error
 
