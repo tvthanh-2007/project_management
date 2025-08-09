@@ -7,24 +7,17 @@ module Api
       before_action :load_invitation, only: :accept
 
       def create
-        unless current_user.admin? || manager_in_project?
-          return render_error(message: "Forbidden", status: :forbidden)
-        end
+        raise ForbiddenError unless current_user.admin? || current_user.manager_in_project?(@project)
 
         @project.invitations.pending.where(email: invitation_params[:email]).delete_all
 
         invitation = @project.invitations.new(invitation_params.merge(status: :pending))
         invitation.token = SecureRandom.hex(20)
         invitation.expires_at = 7.days.from_now
+        invitation.save!
 
-        if invitation.save
-          InvitationMailer.invite_email(invitation).deliver_now
-          res({}, message: "Invitation sent",  status: :created)
-        else
-          errors = invitation.errors.map { |attr, msg| { attribute: attr.to_s, message: msg } }
-
-          render_error(errors)
-        end
+        InvitationMailer.invite_email(invitation).deliver_now
+        res({}, message: "Invitation sent",  status: :created)
       end
 
       def accept

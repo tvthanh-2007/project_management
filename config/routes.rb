@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
       resources :projects do
         resources :invitations, only: :create
+        resources :member_projects, only: :update
       end
 
       resources :invitations, only: [] do

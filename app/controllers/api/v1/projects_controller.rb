@@ -6,21 +6,13 @@ module Api
       before_action :load_project, only: [ :show, :edit, :destroy ]
 
       def create
-        project = current_user.projects.new(project_params)
+        project = current_user.projects.create!(project_params)
 
-        if project.save
-          if current_user.member?
-            project.member_projects.create!(user: current_user, role: :manager)
-          end
-
-          res({}, status: :created)
-        else
-          errors = project.errors.map do |attr, msg|
-            { attribute: attr.to_s, message: msg }
-          end
-
-          render_error(errors)
+        if current_user.member?
+          project.member_projects.create!(user: current_user, role: :manager)
         end
+
+        res({}, status: :created)
       end
 
       def index
@@ -45,13 +37,13 @@ module Api
           return
         end
 
-        render_error(message: "Unauthorized!", status: :unauthorized)
+        raise UnauthorizedError
       end
 
       def update
-        return render_error(message: "Unauthorized!", status: :unauthorized)  if current_user.only_read?(@project.id)
+        return raise UnauthorizedError  if current_user.only_read?(@project.id)
 
-        @project.update(project_params)
+        @project.update!(project_params)
         res({})
       end
 
