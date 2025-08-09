@@ -1,7 +1,12 @@
 class User < ApplicationRecord
   has_secure_password
 
+  has_many :member_projects
+  has_many :projects, through: :member_projects
+
   enum :role, { admin: 0, member: 1 }
+
+  validates :email, uniqueness: true, if: :member?
 
   class << self
     def generate_tokens(user)
