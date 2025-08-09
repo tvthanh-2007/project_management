@@ -28,8 +28,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_09_092355) do
   create_table "invitations", force: :cascade do |t|
     t.bigint "project_id", null: false
     t.string "email"
-    t.string "role", null: false
+    t.integer "role", null: false
     t.string "token", null: false
+    t.integer "status", default: 0
     t.datetime "expires_at"
     t.datetime "accepted_at"
     t.datetime "created_at", null: false

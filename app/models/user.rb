@@ -22,4 +22,12 @@ class User < ApplicationRecord
       }
     end
   end
+
+  def only_read?(project_id)
+    member? && member_prejects.where(project_id:).read?
+  end
+
+  def has_owner?(project)
+    project.user_id == id
+  end
 end

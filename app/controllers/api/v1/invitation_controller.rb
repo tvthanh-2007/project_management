@@ -1,0 +1,62 @@
+module Api
+  module V1
+    class InvitationsController < ApplicationController
+      include AuthorizeRequest
+
+      before_action :load_project, only: :create
+      before_action :load_invitation, only: :accept
+
+      def create
+        unless current_user.admin? || manager_in_project?
+          return render_error(message: "Forbidden", status: :forbidden)
+        end
+
+        @project.invitations.pending.where(email: invitation_params[:email]).delete_all
+
+        invitation = @project.invitations.new(invitation_params.merge(status: :pending))
+        invitation.token = SecureRandom.hex(20)
+        invitation.expires_at = 7.days.from_now
+
+        if invitation.save
+          InvitationMailer.invite_email(invitation).deliver_now
+          res({}, message: "Invitation sent",  status: :created)
+        else
+          errors = invitation.errors.map { |attr, msg| { attribute: attr.to_s, message: msg } }
+
+          render_error(errors)
+        end
+      end
+
+      def accept
+        return render_error({}, message: "Invitation invalid!") if @invitation.nil?
+        return render_error({}, message: "Invitation not belong to you!") if @invitation.email != current_user.email
+        return render_error({}, message: "Invitation expired!") if @invitation.invalid?
+
+        return res({}, message: "You had join project") if @invitation.accepted?
+
+        MemberProject.create!(user: current_user, project: @invitation.project, role: @invitation.role)
+        @invitation.accept!
+
+        res({}, message: "Invitation accepted!")
+      end
+
+      private
+
+      def load_project
+        @project ||= current_user.admin? ? Project.find(params[:id]) : current_user.projects.find(params[:id])
+      end
+
+      def load_invitation
+        @invitation = Invitation.pending.find_by(token: params[:token], email: params[:email])
+      end
+
+      def invitation_params
+        params.require(:invitation).permit(:email, :role)
+      end
+
+      def manager_in_project?
+        current_user.member_prejects.find_by(project_id: @project.id)&.manager?
+      end
+    end
+  end
+end
