@@ -9,7 +9,7 @@ module Api
 
           token = Token.create!(user:, access_token:, refresh_token:)
 
-          res(token, message: "Login successful", as: :list)
+          res(token, message: "Login successful")
         else
           render_error(message: "Wrong username or password!", status: :unauthorized)
         end
