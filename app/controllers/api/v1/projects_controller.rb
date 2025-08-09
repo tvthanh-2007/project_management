@@ -26,18 +26,16 @@ module Api
       end
 
       def edit
-        return render_error(message: "Unauthorized!", status: :unauthorized)  if current_user.only_read?(@project.id)
+        raise UnauthorizedError  if current_user.only_read?(@project.id)
 
         res(@project)
       end
 
       def destroy
-        if current_user.admin? || current_user.has_owner?(@project)
-          @project.destroy
-          return
-        end
+        raise UnauthorizedError unless current_user.member? && !current_user.has_owner?(@project)
 
-        raise UnauthorizedError
+        @project.destroy
+        res({}, message: "Delete successful!")
       end
 
       def update
