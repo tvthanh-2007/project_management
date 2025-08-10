@@ -1,13 +1,15 @@
 class ApplicationController < ActionController::API
   include RenderHelper
 
+  # rails errors
+  rescue_from StandardError, with: :render_internal_server_error
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
   rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity
 
-  rescue_from ApiErrors::UnauthorizedError, with: :render_unauthorized
+  # custom errors
   rescue_from ApiErrors::ForbiddenError, with: :render_forbidden
+  rescue_from ApiErrors::UnauthorizedError, with: :render_unauthorized
 
-  rescue_from StandardError, with: :render_internal_server_error
 
   def render_not_found(exception)
     render json: { error: exception.message || "Resource not found" }, status: :not_found
