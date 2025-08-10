@@ -3,16 +3,11 @@ module Api
     class SessionsController < ApplicationController
       def create
         user = User.find_by(username: params[:username])
+        raise ApiErrors::UnauthorizedError, "Wrong username or password!" unless user&.authenticate(params[:password])
 
-        if user&.authenticate(params[:password])
-          access_token, refresh_token = load_token(user)
-
-          token = Token.create!(user:, access_token:, refresh_token:)
-
-          res(token, message: "Login successful")
-        else
-          render_error(message: "Wrong username or password!", status: :unauthorized)
-        end
+        access_token, refresh_token = load_token(user)
+        token = Token.create!(user:, access_token:, refresh_token:)
+        res(token, message: "Login successful")
       end
 
       def refresh
@@ -39,7 +34,6 @@ module Api
       def logout
         access_token = request.headers["Authorization"]&.split(" ")&.last
         token_record = Token.active.find_by(access_token:)
-
 
         raise ApiErrors::UnauthorizedError, "Token invalid!" unless token_record
 
