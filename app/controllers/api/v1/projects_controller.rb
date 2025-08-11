@@ -1,7 +1,7 @@
 module Api
   module V1
     class ProjectsController < ApplicationController
-      # include AuthorizeRequest
+      include AuthorizeRequest
 
       before_action :load_project, only: [ :show, :edit, :destroy ]
 
@@ -16,8 +16,7 @@ module Api
       end
 
       def index
-        # projects = current_user.admin? ? Project.all : current_user.projects
-        projects = Project.all
+        projects = current_user.admin? ? Project.all : current_user.projects
 
         res(projects, as: :list)
       end

@@ -9,14 +9,17 @@ Rails.application.routes.draw do
   # root "posts#index"
   namespace :api do
     namespace :v1 do
-      post "login", to: "sessions#create"
-      post "refresh", to: "sessions#refresh"
-      delete "logout", to: "sessions#logout"
+      post :login, to: "sessions#create"
+      post :refresh, to: "sessions#refresh"
+      delete :logout, to: "sessions#logout"
+      get :profile, to: "users#show"
 
       resources :projects do
         resources :invitations, only: :create
         resources :member_projects, only: :update
       end
+
+      resources :users, only: :index
 
       resources :invitations, only: [] do
         collection do
