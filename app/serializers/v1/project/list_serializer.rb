@@ -1,7 +1,7 @@
 module V1
   module Project
     class ListSerializer < ActiveModel::Serializer
-      attributes :name, :description, :visibility
+      attributes :id, :name, :description, :visibility, :user_id
 
       def visibility
         object.visibility_before_type_cast
