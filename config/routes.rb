@@ -17,6 +17,9 @@ Rails.application.routes.draw do
       resources :projects do
         resources :invitations, only: :create
         resources :member_projects, only: :update
+        member do
+          get :joined_members
+        end
       end
 
       resources :users, only: :index
