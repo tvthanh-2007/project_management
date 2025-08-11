@@ -12,3 +12,10 @@ FactoryBot.create(:project, name: "project admin", user: User.admin.first)
 Array(1..5).each do |index|
   FactoryBot.create(:project, name: "project #{index}", user: User.member.first)
 end
+
+puts "Add members"
+
+project = Project.first
+User.member.each do |user|
+  FactoryBot.create(:member_project, user: user, project: project, role: rand(0..2))
+end
