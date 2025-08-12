@@ -3,7 +3,7 @@ module Api
     class ProjectsController < ApplicationController
       include AuthorizeRequest
 
-      before_action :load_project, only: [ :show, :edit, :destroy, :joined_members ]
+      before_action :load_project, only: [ :show, :edit, :destroy, :joined_members, :update ]
 
       def create
         project = current_user.projects.create!(project_params)
