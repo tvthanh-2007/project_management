@@ -8,7 +8,7 @@ module Api
       end
 
       def index
-        raise ApiErrors::UnauthorizedError if current_user.member?
+        raise ApiErrors::ForbiddenError if current_user.member?
 
         res(User.member, as: :list)
       end
