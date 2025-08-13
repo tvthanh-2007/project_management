@@ -3,7 +3,7 @@ module Api
     class InvitationsController < ApplicationController
       include AuthorizeRequest
 
-      before_action :load_project, only: :create
+      before_action :load_project
       before_action :load_invitation, only: :accept
 
       def create
@@ -21,11 +21,11 @@ module Api
       end
 
       def accept
-        return render_error({}, message: "Invitation invalid!") if @invitation.nil?
-        return render_error({}, message: "Invitation not belong to you!") if @invitation.email != current_user.email
-        return render_error({}, message: "Invitation expired!") if @invitation.invalid?
+        raise ApiErrors::InvitationError, "Invitation invalid!" if @invitation.nil?
+        raise ApiErrors::InvitationError, "Invitation not belong to you!" if @invitation.email != current_user.email
+        raise ApiErrors::InvitationError, "Invitation expired!" if @invitation.invalid?
 
-        return res({}, message: "You had join project") if @invitation.accepted?
+        return res({}, message: "You had joined project") if @invitation.accepted?
 
         MemberProject.create!(user: current_user, project: @invitation.project, role: @invitation.role)
         @invitation.accept!
@@ -40,7 +40,7 @@ module Api
       end
 
       def load_invitation
-        @invitation = Invitation.pending.find_by(token: params[:token], email: params[:email])
+        @invitation = @project.invitations.pending.find_by(token: params[:token], email: params[:email])
       end
 
       def invitation_params

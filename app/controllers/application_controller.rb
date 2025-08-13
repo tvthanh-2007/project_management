@@ -9,7 +9,7 @@ class ApplicationController < ActionController::API
   # custom errors
   rescue_from ApiErrors::ForbiddenError, with: :render_forbidden
   rescue_from ApiErrors::UnauthorizedError, with: :render_unauthorized
-
+  rescue_from ApiErrors::InvitationError, with: :render_invitation_error
 
   def render_not_found(exception)
     render json: { error: exception.message || "Resource not found" }, status: :not_found
@@ -43,5 +43,9 @@ class ApplicationController < ActionController::API
     logger.error exception.backtrace.join("\n")
 
     render json: { error: "Internal server error" }, status: :internal_server_error
+  end
+
+  def render_invitation_error(exception)
+    render json: { error: exception.message || "Invitation Error!" }, status: :forbidden
   end
 end
