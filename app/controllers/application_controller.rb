@@ -16,7 +16,13 @@ class ApplicationController < ActionController::API
   end
 
   def render_unprocessable_entity(exception)
-    errors = exception.record.errors.as_json.map { |attr, msg| { attribute: attr.to_s, message: msg } }
+    errors = exception.record.errors.map do |error|
+      {
+        attribute: error.attribute,
+        message: Array(error.full_message)
+      }
+    end
+
     render json: { errors: errors }, status: :unprocessable_entity
   end
 

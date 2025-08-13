@@ -28,4 +28,9 @@
 #       enabled: "ON"
 
 en:
-  hello: "Hello world"
+  activerecord:
+    attributes:
+      project:
+        name: Name
+        description: Description
+        vidibitiry: Visibility

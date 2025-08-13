@@ -18,7 +18,7 @@ module Api
       def index
         projects = current_user.admin? ? Project.all : current_user.projects
 
-        res(projects, as: :list)
+        res(projects.order(:id), as: :list)
       end
 
       def show
