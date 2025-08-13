@@ -7,5 +7,5 @@ class Project < ApplicationRecord
   enum :visibility, { public: 0, private: 1 }, prefix: true
 
   validates :name, presence: true, uniqueness: { scope: :user_id }
-  validates :description, length: { maximum: 100 }, allow_blank: true
+  validates :description, presence: true, length: { maximum: 100 }
 end
