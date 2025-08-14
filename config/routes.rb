@@ -15,7 +15,12 @@ Rails.application.routes.draw do
       get :profile, to: "users#show"
 
       resources :projects do
-        resources :invitations, only: :create
+        resources :invitations, only: :create do
+          collection do
+            post :accept
+          end
+        end
+
         resources :member_projects, only: :update
         member do
           get :joined_members
@@ -23,12 +28,6 @@ Rails.application.routes.draw do
       end
 
       resources :users, only: :index
-
-      resources :invitations, only: [] do
-        collection do
-          post :accept
-        end
-      end
     end
   end
 

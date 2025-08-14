@@ -5,6 +5,11 @@ module RenderHelper
   private
 
   def res(resources, options = {})
+    if resources.is_a?(Hash)
+      result = { data: resources.merge(options) }
+      return render json: result, status: options[:status] || :ok
+    end
+
     options.merge! serializer_opt_for(resources, options) if options[:as].present?
     render options.merge json: resources, root: :data
   end
