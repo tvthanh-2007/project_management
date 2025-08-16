@@ -11,6 +11,12 @@ class ApplicationController < ActionController::API
   rescue_from ApiErrors::UnauthorizedError, with: :render_unauthorized
   rescue_from ApiErrors::InvitationError, with: :render_invitation_error
 
+  def error_message(exception, default_msg)
+    msg = exception.message.presence
+    msg = default_msg if msg.blank? || msg == exception.class.to_s
+    msg
+  end
+
   def render_not_found(exception)
     render json: { error: exception.message || "Resource not found" }, status: :not_found
   end
@@ -27,15 +33,15 @@ class ApplicationController < ActionController::API
   end
 
   def render_bad_request(exception)
-    render json: { error: exception.message || "Bad request" }, status: :bad_request
+    render json: { error: error_message(exception, "Bad request") }, status: :bad_request
   end
 
   def render_unauthorized(exception)
-    render json: { error: exception.message || "Unauthorized" }, status: :unauthorized
+    render json: { error: error_message(exception, "Unauthorized") }, status: :unauthorized
   end
 
   def render_forbidden(exception)
-    render json: { error: exception.message || "Forbidden" }, status: :forbidden
+    render json: { error: error_message(exception, "Forbidden") }, status: :forbidden
   end
 
   def render_internal_server_error(exception)
