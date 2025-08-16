@@ -26,7 +26,7 @@ class User < ApplicationRecord
   end
 
   def only_read?(project_id)
-    member? && member_prejects.where(project_id:).read?
+    member? && member_projects.where(project_id:).read?
   end
 
   def has_owner?(project)
