@@ -32,7 +32,7 @@ module Api
       end
 
       def destroy
-        raise ApiErrors::ForbiddenError unless current_user.member? && !current_user.has_owner?(@project)
+        raise ApiErrors::ForbiddenError if current_user.member? && !current_user.has_owner?(@project)
 
         @project.destroy
         res({}, message: "Delete successful!")
