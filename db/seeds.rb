@@ -3,19 +3,24 @@ User.create(name: "Admin", username: "admin", password: "Aa123456", password_con
 
 puts "Create Users"
 Array(1..5).each do |index|
-  FactoryBot.create(:user, email: "tvthanh200782+#{index}@gmail.com")
+  FactoryBot.create(:user, email: "tvthanh200782+#{index}@gmail.com", username: "member#{index}")
 end
 
 puts "Create Projects"
-FactoryBot.create(:project, name: "project admin", user: User.admin.first)
+puts "Add members"
+project_admin = FactoryBot.create(:project, name: "project admin", user: User.admin.first)
 
-Array(1..5).each do |index|
-  FactoryBot.create(:project, name: "project #{index}", user: User.member.first)
+User.member.each do |user|
+  FactoryBot.create(:member_project, user: user, project: project_admin, role: rand(0..2))
 end
 
-puts "Add members"
+manager = User.member.first
+members = User.member.where.not(id: manager.id)
 
-project = Project.first
-User.member.each do |user|
-  FactoryBot.create(:member_project, user: user, project: project, role: rand(0..2))
+Array(1..5).each do |index|
+  project_member = FactoryBot.create(:project, name: "project #{index}", user: manager)
+
+  members.each do |user|
+    FactoryBot.create(:member_project, user: user, project: project_member, role: rand(0..2))
+  end
 end

@@ -32,7 +32,7 @@ module ProjectManagement
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins ENV.fetch("FE_DOMAIN", "http://localhost:5173")  # frontend URL
+        origins ENV.fetch("FE_DOMAIN", "http://localhost:8001")  # frontend URL
 
         resource "*",
           headers: :any,
