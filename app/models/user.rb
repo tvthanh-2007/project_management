@@ -1,8 +1,9 @@
 class User < ApplicationRecord
   has_secure_password
 
+  has_many :projects
   has_many :member_projects
-  has_many :projects, through: :member_projects
+  has_many :joined_projects, through: :member_projects, source: :project
 
   enum :role, { admin: 0, member: 1 }
 

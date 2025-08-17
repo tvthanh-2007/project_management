@@ -38,7 +38,7 @@ module Api
       private
 
       def load_project
-        @project ||= current_user.admin? ? Project.find(params[:project_id]) : current_user.projects.find(params[:project_id])
+        @project ||= current_user.admin? ? Project.find(params[:project_id]) : current_user.joined_projects.find(params[:project_id])
       end
 
       def load_invitation
