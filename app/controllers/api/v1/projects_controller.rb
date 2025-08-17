@@ -16,7 +16,7 @@ module Api
       end
 
       def index
-        projects = current_user.admin? ? Project.all : current_user.projects
+        projects = current_user.admin? ? Project.all : current_user.joined_projects
 
         res(projects.order(:id), as: :list)
       end
@@ -52,7 +52,7 @@ module Api
       private
 
       def load_project
-        @project ||= current_user.admin? ? Project.find(params[:id]) : current_user.projects.find(params[:id])
+        @project ||= current_user.admin? ? Project.find(params[:id]) : current_user.joined_projects.find(params[:id])
       end
 
       def project_params
