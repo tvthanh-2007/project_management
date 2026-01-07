@@ -1,30 +1,41 @@
 puts "Create Admin"
-User.create(name: "Admin", username: "admin", password: "Aa123456", password_confirmation: "Aa123456", role: :admin)
+admin = User.find_or_create_by!(username: "admin") do |u|
+  u.name = "Admin"
+  u.email = "admin@example.com"
+  u.password = "Aa123456"
+  u.password_confirmation = "Aa123456"
+  u.role = :admin
+end
 
 puts "Create Users"
-Array(1..10).each do |index|
-  FactoryBot.create(:user, email: "tvthanh200782+#{index}@gmail.com", username: "member#{index}")
-end
-
-puts "Create Projects"
-puts "Add members"
-project_admin = FactoryBot.create(:project, name: "project admin", user: User.admin.first)
-
-User.member.each do |user|
-  FactoryBot.create(:member_project, user: user, project: project_admin, role: rand(0..2))
-end
-
-manager = User.member.first
-members = User.member.where.not(id: manager.id)
-
-Array(1..2).each do |index|
-  project_member = FactoryBot.create(:project, name: "project #{index}", user: manager)
-
-  members.each do |user|
-    FactoryBot.create(:member_project, user: user, project: project_member, role: rand(0..2))
+users = (1..5).map do |i|
+  User.find_or_create_by!(email: "tvthanh200782+#{i}@gmail.com") do |u|
+    u.name = "User #{i}"
+    u.username = "user#{i}"
+    u.password = "Aa123456"
+    u.password_confirmation = "Aa123456"
+    u.role = :member
   end
 end
 
-Array(3..10).each do |index|
-  FactoryBot.create(:project, name: "project #{index}", user: manager)
+puts "Create Projects"
+Project.find_or_create_by!(
+  name: "project admin",
+  description: "Abc",
+  user: admin
+)
+
+(1..5).map do |i|
+  Project.find_or_create_by!(name: "project #{i}") do |p|
+    p.user = User.member.first
+    p.description = "Abcd"
+  end
+end
+
+puts "Add members"
+project = Project.first
+users.each do |u|
+  MemberProject.find_or_create_by!(user_id: u.id, project_id: project.id) do |m_p|
+    m_p.role = rand(0..2)
+  end
 end
