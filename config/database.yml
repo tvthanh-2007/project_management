@@ -17,21 +17,21 @@ test:
   <<: *default
   database: project_management_test
 
-# production:
-#   primary: &primary_production
-#     <<: *default
-#     database: project_management_production
-#     username: project_management
-#     password: <%= ENV["PROJECT_MANAGEMENT_DATABASE_PASSWORD"] %>
-#   cache:
-#     <<: *primary_production
-#     database: project_management_production_cache
-#     migrations_paths: db/cache_migrate
-#   queue:
-#     <<: *primary_production
-#     database: project_management_production_queue
-#     migrations_paths: db/queue_migrate
-#   cable:
-#     <<: *primary_production
-#     database: project_management_production_cable
-#     migrations_paths: db/cable_migrate
+production:
+  primary: &primary_production
+    <<: *default
+    database: project_management_production
+    username: project_management
+    password: <%= ENV["POSTGRES_PASSWORD"] %>
+  cache:
+    <<: *primary_production
+    database: project_management_production_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *primary_production
+    database: project_management_production_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *primary_production
+    database: project_management_production_cable
+    migrations_paths: db/cable_migrate
