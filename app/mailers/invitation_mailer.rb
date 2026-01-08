@@ -1,5 +1,5 @@
 class InvitationMailer < ApplicationMailer
-  default from: "no-reply@gmail.com"
+  default from: ENV.fetch("MAILERSEND_MAIL_NO_REPLY", "no-reply@gmail.com")
 
   def invite_email(invitation)
     @invitation = invitation
