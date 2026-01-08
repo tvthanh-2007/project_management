@@ -10,8 +10,13 @@ default: &default
 
 
 development:
-  <<: *default
-  database:  <%= ENV.fetch("POSTGRES_DB", "project_management_development") %>
+  primary:
+    <<: *default
+    database:  <%= ENV.fetch("POSTGRES_DB", "project_management_development") %>
+  queue:
+    <<: *default
+    database: project_management_development_queue
+    migrations_paths: db/queue_migrate
 
 test:
   <<: *default
